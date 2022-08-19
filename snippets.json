@@ -1,0 +1,11 @@
+{
+    "html": {
+      "snippets": {
+        "doc": "html[lang=${lang}]>(head>meta[charset=${charset}]+meta:vp+title{${1:Document}})+body"
+      }
+    },
+    "css": {
+      "snippets": {
+      }
+    }
+  }
