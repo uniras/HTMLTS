@@ -1,5 +1,5 @@
 (async function (id) {
-    //document.body関数を短縮
+    //document.bodyを短縮
     let body = document.body;
 
     //動的に外部JavaScriptファイルのロード
