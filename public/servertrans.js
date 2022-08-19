@@ -71,15 +71,15 @@
         sourcemap = true;
         usecode = true;
         suffix = '.js';
-    } else if (request.query.compile === 'template') {
-        //別のトランスレータ―でコンパイルされる場合
-        return;
-    } else {
+    } else if (request.query.compile === undefined) {
         //EJSコードを削除したHTMLをブラウザに表示
         usecode = true;
         usehtml = true;
         usefootscript = true;
         scripttag = ['<textarea id="_ts" style="display:none;">', '    </textarea>'];
+    } else {
+        //別のトランスレータ―でコンパイルされる場合
+        return;
     }
 
     //自分自身のファイルを読み込み
