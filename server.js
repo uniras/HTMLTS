@@ -8,8 +8,9 @@ const fs = require('fs');
 const path = require('path');
 const ejs = require('ejs');
 const babel = require('@babel/core');
-const UglifyJS = require("uglify-js");
-serverlib.Modules = { fs: fs, path: path, ejs: ejs, babel: babel, UglifyJS: UglifyJS};
+const UglifyJS = require('uglify-js');
+const less = require('less');
+serverlib.Modules = { fs: fs, path: path, ejs: ejs, babel: babel, UglifyJS: UglifyJS, less: less};
 
 const app = require('express')();
 
