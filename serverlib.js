@@ -87,10 +87,12 @@ const fs = require('fs');
 
         let date = new Date();
         let datestr = `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDay().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+        let query = url.parse(request.url).search;
+        query = query !== null ? query : '';
 
 
         if (path.includes('/..')) {
-            console.log(datestr + ' - 404: ' + WebRoot + path);
+            console.log(datestr + ' - 404: ' + WebRoot + path + query);
             return null;
         }
 
@@ -98,10 +100,10 @@ const fs = require('fs');
 
         try {
             fs.statSync(rpath);
-            console.log(datestr + ' - 200: ' + rpath);
+            console.log(datestr + ' - 200: ' + rpath + query);
             return rpath;
         } catch (error) {
-            console.log(datestr + ' - 404: ' + rpath);
+            console.log(datestr + ' - 404: ' + rpath + query);
             return null;
         }
     }
