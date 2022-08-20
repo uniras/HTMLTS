@@ -20,15 +20,23 @@ let _ejsdata = {};
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
+    <!-- end -->
+    <!-- sstart -->
+    <style type="text/less">
+        #output {
+            span {
+                color: red;
+            }
+        }
     </style>
+    <!-- end -->
+    <!-- start -->
     <title></title>
 </head>
 
 <body>
 
-
-
+    <div id="output"><span>赤くなるかな？</span></div>
     <!-- end -->
     <textarea id="_ts" style="display:none;">/**/ //<!-- cstart -->
 
@@ -39,7 +47,7 @@ let _ejsdata = {};
     <any>0;/*</any>
     <!-- fstart -->
     <script>
-        (async function(t){let s=document.body,e=async function(n){return new Promise(function(t){let e=document.createElement("script");e.type="text/javascript",e.src=n,e.onload=function(){t()},s.appendChild(e)})},n=(await e("https://cdn.jsdelivr.net/npm/@babel/polyfill@latest/dist/polyfill.min.js"),await e("https://cdn.jsdelivr.net/npm/@babel/standalone@latest/babel.min.js"),Babel.registerPreset("ts-plus",{presets:[[Babel.availablePresets.typescript,{allExtensions:!0,loose:!0}]],sourceMaps:"inline"}),Babel.transform(document.getElementById(t).textContent,{presets:["ts-plus"]}).code),l=document.createElement("script");l.type="text/javascript",l.textContent="(function() {"+n+"\n})()\n",s.appendChild(l)})("_ts");
+        (async function(t){let s=document.body,e=(window.less={logLevel:0},async function(n){return new Promise(function(t){let e=document.createElement("script");e.type="text/javascript",e.src=n,e.onload=function(){t()},s.appendChild(e)})}),n=(await e("https://cdn.jsdelivr.net/npm/less@latest/dist/less.js"),await e("https://cdn.jsdelivr.net/npm/@babel/polyfill@latest/dist/polyfill.min.js"),await e("https://cdn.jsdelivr.net/npm/@babel/standalone@latest/babel.min.js"),Babel.registerPreset("ts-plus",{presets:[[Babel.availablePresets.typescript,{allExtensions:!0,loose:!0}]],sourceMaps:"inline"}),Babel.transform(document.getElementById(t).textContent,{presets:["ts-plus"]}).code),l=document.createElement("script");l.type="text/javascript",l.textContent="(function() {"+n+"\n})()\n",s.appendChild(l)})("_ts");
     </script>
     <!-- end -->
     <!-- start -->
@@ -48,7 +56,7 @@ let _ejsdata = {};
 </html>
 <!-- end -->
 <!-- <% } else {
-            (function(t,e){let s="compile",r=!1,l=!1,i=!1,c="",a=!1,p=!1,n=!1,o=["",""],m="",f=!1,u=["<","%"].join(""),y=["%",">"].join(""),d=["<","!","-","-"].join(""),q=["-","-",">"].join("");if("html"===request.query.compile)r=!0,a=!0,p=!0,n=!0,o=['<textarea id="_ts" style="display:none;">',"    </textarea>"],c=".html";else if("htmljs"===request.query.compile)r=!0,a=!0,p=!0,l=!0,o=['<script type="text/javascript">',"    </script>"],c=".html";else if("htmljsdebug"===request.query.compile)r=!0,a=!0,p=!0,l=!0,f=!0,o=['<script type="text/javascript">',"    </script>"],c=".html";else if("htmljstag"===request.query.compile)r=!0,p=!0,i=!0,c=".html";else if("htmlonly"===request.query.compile)r=!0,p=!0,c=".html";else if("typescript"===request.query.compile)r=!0,a=!0,c=".ts";else if("javascript"===request.query.compile)r=!0,l=!0,a=!0,c=".js";else if("javascriptdebug"===request.query.compile)r=!0,l=!0,f=!0,a=!0,c=".js";else{if(void 0!==request.query.compile)return;a=!0,p=!0,n=!0,o=['<textarea id="_ts" style="display:none;">',"    </textarea>"]}let j=fs.readFileSync(t,"utf-8").toString(),g=(j=j.replaceAll(/\/\/\s*?(?<nocom>[<]!--)/g,"$<nocom>"),j=j.replaceAll(/\/\*\*\//g,""),j=j.replaceAll(/\/\*%/g,u),j=j.replaceAll(/%\*\/([a-zA-Z0-9_]*)/g,y),j=j.replaceAll(/[<]!--%/g,u),j=j.replaceAll(/%--[>]/g,y),j),h="";if(p){(a||i)&&(g=g.replace(/[<]!-- cstart --[>]/,d+" start "+q+"[*script*]"+d+" end "+q),g=g.replace(/[<]!-- fstart --[>]/,d+" start "+q+"[*fscript*]"+d+" end "+q)),g=g.replaceAll(/\/\/\s*?(?<nocom>[<]!--)/g,"$<nocom>");let e=g.matchAll(/[<]!-- start --[>](.*?)[<]!-- end --[>]/gs);for(const b of e)h+=b[1]}if(i)h=h.replace(/\[\*(?<scr>script.*?\/script)\*\]/,"$<scr>"),h=h.replace(/\[\*fscript\*\]/,"");else if(a){let e="",t=j.match(/[<]!-- cstart --[>](.*?)[<]!-- end --[>]/s);if(e=t[1],l){const A={targets:"defaults",plugins:[["@babel/plugin-transform-typescript",{allExtensions:!0,loose:!0}]],presets:["@babel/env"]};f&&Object.assign(A,{sourceMaps:"inline"}),e=babel.transform(e,A).code}if(p)if(i||(h=h.replace(/\[\*script\*\]/,o[0]+"\n"+e+"\n"+o[1])),n){let e,t=j.match(/[<]!-- fstart --[>](.*?)[<]!-- end --[>]/s);e=t[1],h=h.replace(/\[\*fscript\*\]/,e)}else h=h.replace(/\[\*fscript\*\]/,"");else h=e}if(h=h.trim(),h=ejs.compile(h,{client:!0})(e),r){let e=path.parse(t);i&&(h=h.replace(/\[\*script\*\]/,'<script src="./'+e.name+'.js"></script>')),fs.existsSync(e.dir+"/"+s+"/")||fs.mkdirSync(e.dir+"/"+s+"/"),fs.writeFileSync(e.dir+"/"+s+"/"+e.name+c,h,"utf-8"),_echostr=q+e.dir+"/"+s+"/"+e.name+c+"　にファイルを作成しました。"+d}else _echostr=q+h+d;m})(__filename,_ejsdata);
-        } %><%- _echostr %>
--->
-<!--*/ //-->
+            (function(s,e){let t="compile",l=!1,r=!1,c=!1,i="",a=!1,p=!1,n=!1,o=!1,m=["",""],f="",y=!1,u=["<","%"].join(""),d=["%",">"].join(""),q=["<","!","-","-"].join(""),h=["-","-",">"].join("");if("html"===request.query.compile)l=!0,a=!0,p=!0,n=!0,o=!0,m=['<textarea id="_ts" style="display:none;">',"    </textarea>"],i=".html";else if("htmljs"===request.query.compile)l=!0,a=!0,p=!0,n=!0,r=!0,m=['<script type="text/javascript">',"    </script>"],i=".html";else if("htmljsdebug"===request.query.compile)l=!0,a=!0,p=!0,n=!0,r=!0,y=!0,m=['<script type="text/javascript">',"    </script>"],i=".html";else if("htmljstag"===request.query.compile)l=!0,p=!0,c=!0,i=".html";else if("htmlonly"===request.query.compile)l=!0,p=!0,i=".html";else if("typescript"===request.query.compile)l=!0,a=!0,i=".ts";else if("javascript"===request.query.compile)l=!0,r=!0,a=!0,i=".js";else if("javascriptdebug"===request.query.compile)l=!0,r=!0,y=!0,a=!0,i=".js";else if("css"===request.query.compile)l=!0,r=!0,a=!0,n=!0,i=".css";else{if(void 0!==request.query.compile)return;a=!0,p=!0,n=!0,o=!0,m=['<textarea id="_ts" style="display:none;">',"    </textarea>"]}let g=fs.readFileSync(s,"utf-8").toString(),j=(g=g.replaceAll(/\/\/\s*?(?<nocom>[<]!--)/g,"$<nocom>"),g=g.replaceAll(/\/\*\*\//g,""),g=g.replaceAll(/\/\*%/g,u),g=g.replaceAll(/%\*\/([a-zA-Z0-9_]*)/g,d),g=g.replaceAll(/[<]!--%/g,u),g=g.replaceAll(/%--[>]/g,d),g),x="";if(p){(a||c)&&(j=j.replace(/[<]!-- cstart --[>]/,q+" start "+h+"[*script*]"+q+" end "+h),j=j.replace(/[<]!-- sstart --[>]/,q+" start "+h+"[*sscript*]"+q+" end "+h),j=j.replace(/[<]!-- fstart --[>]/,q+" start "+h+"[*fscript*]"+q+" end "+h)),j=j.replaceAll(/\/\/\s*?(?<nocom>[<]!--)/g,"$<nocom>");let e=j.matchAll(/[<]!-- start --[>](.*?)[<]!-- end --[>]/gs);for(const b of e)x+=b[1]}if(c)x=x.replace(/\[\*(?<scr>script.*?\/script)\*\]/,"$<scr>"),x=x.replace(/\[\*fscript\*\]/,"");else if(a){let e="",s=g.match(/[<]!-- cstart --[>](.*?)[<]!-- end --[>]/s);if(e=s[1],s=g.match(/[<]!-- sstart --[>].*?<style type="text\/less">(.*?)<\/style>.*?[<]!-- end --[>]/s),lesscode=s[1],r){const A={targets:"defaults",plugins:[["@babel/plugin-transform-typescript",{allExtensions:!0,loose:!0}]],presets:["@babel/env"]};y&&Object.assign(A,{sourceMaps:"inline"}),e=babel.transform(e,A).code,less.render(lesscode,{sync:!0},function(e,s){css=e?e.toString():s.css}),lesscode=css}if(p)if(c||(x=x.replace(/\[\*script\*\]/,m[0]+"\n"+e+"\n"+m[1])),x=n?r?x.replace(/\[\*sscript\*\]/,"<style>"+lesscode+"</style>"):x.replace(/\[\*sscript\*\]/,'<style type="text/less">'+lesscode+"</style>"):x.replace(/\[\*sscript\*\]/,""),o){let e,s=g.match(/[<]!-- fstart --[>](.*?)[<]!-- end --[>]/s);e=s[1],x=x.replace(/\[\*fscript\*\]/,e)}else x=x.replace(/\[\*fscript\*\]/,"");else x=n?lesscode:e}if(x=x.trim(),x=ejs.compile(x,{client:!0})(e),l){let e=path.parse(s);c&&(x=x.replace(/\[\*script\*\]/,'<script src="./'+e.name+'.js"></script>'),x=x.replace(/\[\*sscript\*\]/,'<link href="'+e.name+'.css" rel="stylesheet">')),fs.existsSync(e.dir+"/"+t+"/")||fs.mkdirSync(e.dir+"/"+t+"/"),fs.writeFileSync(e.dir+"/"+t+"/"+e.name+i,x,"utf-8"),_echostr=h+e.dir+"/"+t+"/"+e.name+i+"　にファイルを作成しました。"+q}else _echostr=h+x+q;f})(__filename,_ejsdata);
+} %><%- _echostr %>
+    -->
+    <!--*/ //-->

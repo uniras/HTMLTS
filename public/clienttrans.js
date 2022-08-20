@@ -1,6 +1,11 @@
 (async function (id) {
-    //document.bodyを短縮
+    //appendChild関数を短縮
     let body = document.body;
+    
+    //lessでメッセージが出ないようにする
+    window.less = {
+        logLevel: 0
+    }
 
     //動的に外部JavaScriptファイルのロード
     let includescript = async function (url) {
@@ -16,7 +21,8 @@
     }
 
     //クライアントトランスパイラ
-    //Babelとpolyfillのロード
+    //less.jsとBabelとpolyfillのロード
+    await includescript('https://cdn.jsdelivr.net/npm/less@latest/dist/less.js');
     await includescript('https://cdn.jsdelivr.net/npm/@babel/polyfill@latest/dist/polyfill.min.js');
     await includescript('https://cdn.jsdelivr.net/npm/@babel/standalone@latest/babel.min.js');
 

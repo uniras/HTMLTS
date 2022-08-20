@@ -3,11 +3,12 @@
 (function (fname, ejsdata) {
     let directory = 'compile';       //出力ディレクトリ
     let compile = false;             //ファイルに出力
-    let translate = false;           //JavaScriptにトランスパイル
+    let translate = false;           //JavaScript/cssにトランスパイル
     let insertscripttag = false;     //別のJavaScriptを指すscriptタグを出力
     let suffix = '';                 //出力ファイルの拡張子
     let usecode = false;             //TypeScript(JavaScript)コードを出力
     let usehtml = false;             //HTMLを出力
+    let usecss = false;              //less/cssを出力
     let usefootscript = false;       //ブラウザでトランスパイルするコードを出力
     let scripttag = ['', ''];        //コード部分に適用するタグの設定
     let echostr = '';                //メッセージ表示用の戻り値
@@ -22,6 +23,7 @@
         compile = true;
         usecode = true;
         usehtml = true;
+        usecss = true;
         usefootscript = true;
         scripttag = ['<textarea id="_ts" style="display:none;">', '    </textarea>'];
         suffix = '.html';
@@ -30,6 +32,7 @@
         compile = true;
         usecode = true;
         usehtml = true;
+        usecss = true;
         translate = true;
         scripttag = ['<script type="text/javascript">', '    </script>'];
         suffix = '.html';
@@ -38,6 +41,7 @@
         compile = true;
         usecode = true;
         usehtml = true;
+        usecss = true;
         translate = true;
         sourcemap = true;
         scripttag = ['<script type="text/javascript">', '    </script>'];
@@ -71,10 +75,18 @@
         sourcemap = true;
         usecode = true;
         suffix = '.js';
+    } else if (request.query.compile === 'css') {
+        //トランスパイルしたcssコードをファイルに出力
+        compile = true;
+        translate = true;
+        usecode = true;
+        usecss = true;
+        suffix = '.css';
     } else if (request.query.compile === undefined) {
         //EJSコードを削除したHTMLをブラウザに表示
         usecode = true;
         usehtml = true;
+        usecss = true;
         usefootscript = true;
         scripttag = ['<textarea id="_ts" style="display:none;">', '    </textarea>'];
     } else {
@@ -105,6 +117,7 @@
         if (usecode || insertscripttag) {
             //あとでTypeScriptやJavaScriptコードを挿入できるようにマーク文字列を埋め込み
             htmlcode = htmlcode.replace(/[<]!-- cstart --[>]/, hcomstart + ' start ' + hcomend + '[*script*]' + hcomstart + ' end ' + hcomend);
+            htmlcode = htmlcode.replace(/[<]!-- sstart --[>]/, hcomstart + ' start ' + hcomend + '[*sscript*]' + hcomstart + ' end ' + hcomend);
             htmlcode = htmlcode.replace(/[<]!-- fstart --[>]/, hcomstart + ' start ' + hcomend + '[*fscript*]' + hcomstart + ' end ' + hcomend);
         }
 
@@ -130,11 +143,26 @@
         let matches = source.match(/[<]!-- cstart --[>](.*?)[<]!-- end --[>]/s);
         tscode = matches[1];
 
-        //必要ならTypeScriptからJavaScriptにトランスパイル
+        //lessコードを抜き出す
+        matches = source.match(/[<]!-- sstart --[>].*?<style type="text\/less">(.*?)<\/style>.*?[<]!-- end --[>]/s);
+        lesscode = matches[1];
+
+        //必要ならTypeScriptからJavaScript、lessからcssにトランスパイル
         if (translate) {
+            //TypeScriptのトランスパイル
             const option = { 'targets': 'defaults', 'plugins': [['@babel/plugin-transform-typescript', { 'allExtensions': true, 'loose': true }]], presets: ['@babel/env'] };
             if (sourcemap) Object.assign(option, { sourceMaps: "inline" });
-            tscode = babel.transform(tscode, option).code
+            tscode = babel.transform(tscode, option).code;
+
+            //lessのトランスパイル
+            less.render(lesscode, {sync: true}, function (err, result) {
+                if (err) {
+                    css = err.toString();
+                } else {
+                    css = result.css;
+                }
+            });
+            lesscode = css;
         }
 
         if (usehtml) {
@@ -142,6 +170,18 @@
             if (!insertscripttag) {
                 output = output.replace(/\[\*script\*\]/, scripttag[0] + "\n" + tscode + "\n" + scripttag[1]);
             }
+
+            //lessコードまたはcssコードをHTMLに埋め込む
+            if (usecss) {
+                if (translate) {
+                    output = output.replace(/\[\*sscript\*\]/, '<style>' + lesscode + '</style>');
+                } else {
+                    output = output.replace(/\[\*sscript\*\]/, '<style type="text/less">' + lesscode + '</style>');
+                }
+            } else {
+                output = output.replace(/\[\*sscript\*\]/, '');
+            }
+
             if (usefootscript) {
                 //ブラウザでトランスパイルするコードを埋め込む
                 let footer;
@@ -153,8 +193,13 @@
                 output = output.replace(/\[\*fscript\*\]/, '');
             }
         } else {
-            //HTMLは出力しないのでそのままTypeScriptまたはJavaScriptファイルを出力
-            output = tscode;
+            if(usecss) {
+                //cssファイルを出力
+                output = lesscode;
+            } else {
+                //HTMLは出力しないのでそのままTypeScriptまたはJavaScriptファイルを出力
+                output = tscode;
+            }
         }
     }
 
@@ -172,6 +217,7 @@
         if (insertscripttag) {
             //別のJavaScriptファイルを参照するscriptタグを出力
             output = output.replace(/\[\*script\*\]/, '<script src="./' + path_parts.name + '.js"></script>');
+            output = output.replace(/\[\*sscript\*\]/, '<link href="' + path_parts.name + '.css" rel="stylesheet">');
         }
 
         //出力用ディレクトリが存在しないときは作成する
